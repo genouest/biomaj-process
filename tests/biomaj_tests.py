@@ -46,5 +46,5 @@ class TestBiomajProcess(unittest.TestCase):
     env_var.value = '1.2.3'
     msg.shell_expand = False
     print(msg)
-    exitcode = self.pserv.execute(msg)
-    self.assertTrue(exitcode == 0)
+    proc = self.pserv.execute(msg)
+    self.assertTrue(proc['exitcode'] == 0)

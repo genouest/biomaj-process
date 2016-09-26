@@ -109,6 +109,7 @@ class ProcessService(object):
         try:
             res = process.run()
             exitcode = process.exitcode
+            proc['exitcode'] = exitcode
             proc['execution_time'] = process.exec_time
         except Exception as e:
             self.logger.error('Execution error:%s:%s:%s' % (biomaj_file_info.bank, biomaj_file_info.session, str(e)))
