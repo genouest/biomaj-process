@@ -1,4 +1,2 @@
-3.0.1:
-  add missing README etc.. in package
 3.0.0:
-  move download management out of biomaj main package
+  move process management out of biomaj main package
