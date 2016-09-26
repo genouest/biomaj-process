@@ -56,7 +56,7 @@ config = {
     'packages': find_packages(),
     'include_package_data': True,
     'scripts': ['bin/biomaj_process_consumer.py'],
-    'name': 'biomaj_download'
+    'name': 'biomaj_process'
 }
 
 setup(**config)

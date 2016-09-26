@@ -18,7 +18,7 @@ _sym_db = _symbol_database.Default()
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='message.proto',
   package='biomaj',
-  serialized_pb=_b('\n\rmessage.proto\x12\x06\x62iomaj\"\xf8\x01\n\x07Process\x12\x0c\n\x04\x62\x61nk\x18\x01 \x02(\t\x12\x0f\n\x07session\x18\x02 \x02(\t\x12\x0f\n\x07log_dir\x18\x03 \x02(\t\x12\x0b\n\x03\x65xe\x18\x04 \x02(\t\x12\x0c\n\x04\x61rgs\x18\x05 \x03(\t\x12(\n\x08\x65nv_vars\x18\x06 \x03(\x0b\x32\x16.biomaj.Process.EnvVar\x12\x1b\n\x0cshell_expand\x18\x07 \x01(\x08:\x05\x66\x61lse\x12\x0c\n\x04name\x18\x08 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\t \x01(\t\x12\x11\n\tproc_type\x18\n \x01(\t\x1a%\n\x06\x45nvVar\x12\x0c\n\x04name\x18\x01 \x02(\t\x12\r\n\x05value\x18\x02 \x02(\t\"G\n\tOperation\x12 \n\x07process\x18\x01 \x01(\x0b\x32\x0f.biomaj.Process\"\x18\n\tOPERATION\x12\x0b\n\x07\x45XECUTE\x10\x01')
+  serialized_pb=_b('\n\rmessage.proto\x12\x06\x62iomaj\"\xf8\x01\n\x07Process\x12\x0c\n\x04\x62\x61nk\x18\x01 \x02(\t\x12\x0f\n\x07session\x18\x02 \x02(\t\x12\x0f\n\x07log_dir\x18\x03 \x02(\t\x12\x0b\n\x03\x65xe\x18\x04 \x02(\t\x12\x0c\n\x04\x61rgs\x18\x05 \x03(\t\x12(\n\x08\x65nv_vars\x18\x06 \x03(\x0b\x32\x16.biomaj.Process.EnvVar\x12\x1b\n\x0cshell_expand\x18\x07 \x01(\x08:\x05\x66\x61lse\x12\x0c\n\x04name\x18\x08 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\t \x01(\t\x12\x11\n\tproc_type\x18\n \x01(\t\x1a%\n\x06\x45nvVar\x12\x0c\n\x04name\x18\x01 \x02(\t\x12\r\n\x05value\x18\x02 \x02(\t\"{\n\tOperation\x12 \n\x07process\x18\x01 \x01(\x0b\x32\x0f.biomaj.Process\x12\x32\n\x04type\x18\x02 \x02(\x0e\x32\x1b.biomaj.Operation.OPERATION:\x07\x45XECUTE\"\x18\n\tOPERATION\x12\x0b\n\x07\x45XECUTE\x10\x01')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -37,8 +37,8 @@ _OPERATION_OPERATION = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=323,
-  serialized_end=347,
+  serialized_start=375,
+  serialized_end=399,
 )
 _sym_db.RegisterEnumDescriptor(_OPERATION_OPERATION)
 
@@ -186,6 +186,13 @@ _OPERATION = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='type', full_name='biomaj.Operation.type', index=1,
+      number=2, type=14, cpp_type=8, label=2,
+      has_default_value=True, default_value=1,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -199,12 +206,13 @@ _OPERATION = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=276,
-  serialized_end=347,
+  serialized_end=399,
 )
 
 _PROCESS_ENVVAR.containing_type = _PROCESS
 _PROCESS.fields_by_name['env_vars'].message_type = _PROCESS_ENVVAR
 _OPERATION.fields_by_name['process'].message_type = _PROCESS
+_OPERATION.fields_by_name['type'].enum_type = _OPERATION_OPERATION
 _OPERATION_OPERATION.containing_type = _OPERATION
 DESCRIPTOR.message_types_by_name['Process'] = _PROCESS
 DESCRIPTOR.message_types_by_name['Operation'] = _OPERATION

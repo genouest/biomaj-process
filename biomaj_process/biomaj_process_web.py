@@ -14,9 +14,10 @@ from prometheus_client import Counter
 from prometheus_client import Gauge
 from prometheus_client.exposition import generate_latest
 import consul
+import redis
 
-from biomaj_download.message import message_pb2
-from biomaj_download.downloadservice import DownloadService
+from biomaj_process.message import message_pb2
+from biomaj_process.process_service import ProcessService
 
 app = Flask(__name__)
 
@@ -32,6 +33,11 @@ config = None
 with open(config_file, 'r') as ymlfile:
     config = yaml.load(ymlfile)
 
+
+redis_client = redis.StrictRedis(host=config['redis']['host'],
+                                      port=config['redis']['port'],
+                                      db=config['redis']['db'],
+                                      decode_responses=True)
 
 def start_server(config):
     context = None
@@ -56,7 +62,7 @@ def metrics():
 @app.route('/api/process/metrics', methods=['POST'])
 def add_metrics():
     '''
-    Expects a JSON request with an array of {'bank': 'bank_name', 'error': 'error_message', 'executiob_time': seconds_to_execute}
+    Expects a JSON request with an array of {'bank': 'bank_name', 'error': 'error_message', 'execution_time': seconds_to_execute}
     '''
     procs = request.get_json()
     for proc in procs:
@@ -86,9 +92,9 @@ def clean_session(bank, session):
 
 @app.route('/api/process/session/<bank>/<session>', methods=['GET'])
 def get_session(bank, session):
-    error = self.redis_client.get(self.config['redis']['prefix'] + ':' + bank + ':session:' + session + ':error')
-    exitcode = self.redis_client.get(self.config['redis']['prefix'] + ':' + bank + ':session:' + session + ':exitcode')
-    info = self.redis_client.get(self.config['redis']['prefix'] + ':' + bank + ':session:' + session + ':error:info')
+    error = redis_client.get(config['redis']['prefix'] + ':' + bank + ':session:' + session + ':error')
+    exitcode = redis_client.get(config['redis']['prefix'] + ':' + bank + ':session:' + session + ':exitcode')
+    info = redis_client.get(config['redis']['prefix'] + ':' + bank + ':session:' + session + ':error:info')
     if exitcode:
         exitcode = int(exitcode)
     else:

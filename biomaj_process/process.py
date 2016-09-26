@@ -7,6 +7,8 @@ import tempfile
 import datetime
 import time
 
+from biomaj_process.process_client import ProcessServiceClient
+
 class Process(object):
     '''
     Define a process to execute
@@ -49,6 +51,7 @@ class Process(object):
         self.bank_env = bank_env
         self.type = proc_type
         self.expand = expand
+        self.log_dir = log_dir
         if log_dir is not None:
             self.output_file = os.path.join(log_dir, name + '.out')
             self.error_file = os.path.join(log_dir, name + '.err')
@@ -62,6 +65,7 @@ class Process(object):
         self.files = ''
         self.exitcode = -1
         self.exec_time = 0
+        self.proc_type = proc_type
 
     def run(self, simulate=False):
         '''
@@ -105,6 +109,46 @@ class Process(object):
         logging.info('PROCESS:EXEC:' + self.name + ':' + str(err))
 
         return err
+
+class RemoteProcess(Process):
+    def __init__(self, name, exe, args, desc=None, proc_type=None, expand=True, bank_env=None, log_dir=None, rabbit_mq=None, proxy=None, bank=None):
+        Process.__init__(self, name, exe, args, desc, proc_type, expand, bank_env, log_dir)
+        self.proxy = proxy
+        self.rabbit_mq = rabbit_mq
+        self.bank = bank
+        # Process.__init__(self, name, exe, args, desc, proc_type, expand, bank_env, log_dir)
+        # (self, name, exe, args, desc=None, proc_type=None, expand=True, bank_env=None, log_dir=None)
+
+    def run(self, simulate=False):
+        psc = ProcessServiceClient(self.rabbit_mq)
+        session = psc.create_session(self.bank, self.proxy)
+        from biomaj_process.message import message_pb2
+        biomaj_process = message_pb2.Operation()
+        biomaj_process.type = 1
+        process = message_pb2.Process()
+        process.bank = self.bank
+        process.session = session
+        process.log_dir = self.log_dir
+        process.exe = self.exe
+        for arg in self.args:
+            process.args.append(arg)
+
+        for envvar in list(self.bank_env.keys()):
+            proc_env_var = process.env_vars.add()
+            proc_env_var.name = envvar
+            proc_env_var.value = self.bank_env[envvar]
+        process.shell_expand = self.expand
+        process.name = self.name
+        process.description = self.desc
+        process.proc_type = self.proc_type
+        biomaj_process.process.MergeFrom(process)
+        psc.execute_process(biomaj_process)
+        (exitcode, info) = psc.wait_for_process()
+        psc.clean()
+        if exitcode > 0:
+            return False
+        else:
+            return True
 
 
 class DockerProcess(Process):

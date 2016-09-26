@@ -6,7 +6,9 @@ import yaml
 import redis
 import uuid
 import traceback
+import time
 
+import requests
 import pika
 
 from biomaj_process.message import message_pb2
@@ -42,7 +44,7 @@ class ProcessService(object):
         if rabbitmq and not self.channel:
             connection = pika.BlockingConnection(pika.ConnectionParameters(self.config['rabbitmq']['host']))
             self.channel = connection.channel()
-            self.logger.info('Download service started')
+            self.logger.info('Process service started')
 
     def close(self):
         if self.channel:
@@ -103,16 +105,20 @@ class ProcessService(object):
             biomaj_file_info.log_dir
         )
         exitcode = -1
+        proc = {'bank': self.bank}
         try:
             res = process.run()
             exitcode = process.exitcode
+            proc['execution_time'] = process.exec_time
         except Exception as e:
             self.logger.error('Execution error:%s:%s:%s' % (biomaj_file_info.bank, biomaj_file_info.session, str(e)))
             self.redis_client.set(self.config['redis']['prefix'] + ':' + biomaj_file_info.bank + ':session:' + biomaj_file_info.session + ':error', 1)
             self.redis_client.set(self.config['redis']['prefix'] + ':' + biomaj_file_info.bank + ':session:' + biomaj_file_info.session + ':error:info', str(e))
+        if exitcode > 0:
+            proc['error'] = True
 
         self.redis_client.set(self.config['redis']['prefix'] + ':' + biomaj_file_info.bank + ':session:' + biomaj_file_info.session + ':exitcode', exitcode)
-        return exitcode
+        return proc
 
     def ask_execute(self, biomaj_info_file):
         self.channel.basic_publish(
@@ -131,7 +137,7 @@ class ProcessService(object):
         try:
             operation = message_pb2.Operation()
             operation.ParseFromString(body)
-            self.logger.debug('Received message: %s' % (message))
+            # self.logger.debug('Received message: %s' % (operation))
             if operation.type == 1:
                 message = operation.process
                 self.logger.debug('Execute operation %s, %s' % (message.bank, message.session))
