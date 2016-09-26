@@ -1,14 +1,10 @@
-import os
-import datetime
 import logging
 import logging.config
 import yaml
 import redis
 import uuid
 import traceback
-import time
 
-import requests
 import pika
 
 from biomaj_process.message import message_pb2
@@ -22,7 +18,7 @@ class ProcessService(object):
 
     def __init__(self, config_file, rabbitmq=True):
         self.logger = logging
-        self.session  = None
+        self.session = None
         self.bank = None
         self.executed_callback = None
         with open(config_file, 'r') as ymlfile:
@@ -107,7 +103,7 @@ class ProcessService(object):
         exitcode = -1
         proc = {'bank': self.bank}
         try:
-            res = process.run()
+            process.run()
             exitcode = process.exitcode
             proc['exitcode'] = exitcode
             proc['execution_time'] = process.exec_time

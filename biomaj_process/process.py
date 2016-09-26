@@ -9,6 +9,7 @@ import time
 
 from biomaj_process.process_client import ProcessServiceClient
 
+
 class Process(object):
     '''
     Define a process to execute
@@ -110,6 +111,7 @@ class Process(object):
 
         return err
 
+
 class RemoteProcess(Process):
     def __init__(self, name, exe, args, desc=None, proc_type=None, expand=True, bank_env=None, log_dir=None, rabbit_mq=None, proxy=None, bank=None):
         Process.__init__(self, name, exe, args, desc, proc_type, expand, bank_env, log_dir)
@@ -193,7 +195,7 @@ class DockerProcess(Process):
             args=' '.join(self.args),
             bank_dir=release_dir,
             sudo=use_sudo
-            )
+        )
 
         (handler, tmpfile) = tempfile.mkstemp('biomaj')
         os.write(handler, cmd)

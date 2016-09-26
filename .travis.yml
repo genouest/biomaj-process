@@ -23,7 +23,7 @@ install:
 # command to run tests
 script:
    - nosetests
-   - flake8 --ignore E501 biomaj_process
+   - flake8 --ignore E501 biomaj_process/*.py
 #after_success:
 #  - coveralls
 

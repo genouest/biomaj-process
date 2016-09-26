@@ -34,10 +34,13 @@ with open(config_file, 'r') as ymlfile:
     config = yaml.load(ymlfile)
 
 
-redis_client = redis.StrictRedis(host=config['redis']['host'],
-                                      port=config['redis']['port'],
-                                      db=config['redis']['db'],
-                                      decode_responses=True)
+redis_client = redis.StrictRedis(
+    host=config['redis']['host'],
+    port=config['redis']['port'],
+    db=config['redis']['db'],
+    decode_responses=True
+)
+
 
 def start_server(config):
     context = None
@@ -89,6 +92,7 @@ def clean_session(bank, session):
     biomaj_file_info.session = session
     dserv.clean(biomaj_file_info)
     return jsonify({'msg': 'session cleared'})
+
 
 @app.route('/api/process/session/<bank>/<session>', methods=['GET'])
 def get_session(bank, session):

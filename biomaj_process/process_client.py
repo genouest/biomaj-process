@@ -1,21 +1,15 @@
-import os
-import datetime
 import logging
 import logging.config
-import yaml
-import redis
 import uuid
-import traceback
 import time
 
 import requests
 import pika
 
-from biomaj_process.message import message_pb2
 
 class ProcessServiceClient(object):
 
-    def __init__(self, rabbitmq=None,logger=None):
+    def __init__(self, rabbitmq=None, logger=None):
         self.rabbitmq = rabbitmq
         self.remote = False
         self.session = None
@@ -61,13 +55,12 @@ class ProcessServiceClient(object):
         exitcode = -1
         info = None
         logging.info("Process:RemoteProcess:Waiting")
-        download_error = False
         while not over:
             r = requests.get(self.proxy + '/api/process/session/' + self.bank + '/' + self.session)
             if not r.status_code == 200:
                 raise Exception('Failed to connect to the download proxy')
             result = r.json()
-            #{'error': error, 'exitcode': exitcode, 'info': info}
+            # {'error': error, 'exitcode': exitcode, 'info': info}
             if result['exitcode'] > -1:
                 exitcode = result['exitcode']
                 over = True
@@ -77,20 +70,6 @@ class ProcessServiceClient(object):
             else:
                 time.sleep(1)
         return (exitcode, info)
-
-
-    def create_session(self, bank, proxy=None):
-        self.bank = bank
-        if not self.remote:
-            self.session = str(uuid.uuid4())
-            return self.session
-        r = requests.post(proxy + '/api/process/session/' + bank)
-        if not r.status_code == 200:
-            raise Exception('Failed to connect to the download proxy')
-        result = r.json()
-        self.session = result['session']
-        self.proxy = proxy
-        return result['session']
 
     def clean(self):
         if self.remote:
