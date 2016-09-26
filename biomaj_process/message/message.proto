@@ -1,0 +1,30 @@
+package biomaj;
+
+message Process {
+
+    message EnvVar {
+        required string name = 1;
+        required string value = 2;
+    }
+    // Name of the bank
+    required string bank = 1;
+    required string session = 2;
+    required string log_dir = 3;
+    required string exe = 4;
+    repeated string args = 5;
+    repeated EnvVar env_vars = 6;
+    optional bool shell_expand = 7 [default=false];
+    optional string name = 8;
+    optional string description = 9;
+    optional string proc_type = 10;
+}
+
+
+message Operation {
+
+    enum OPERATION {
+        EXECUTE = 1;
+    }
+
+    optional Process process = 1;
+}

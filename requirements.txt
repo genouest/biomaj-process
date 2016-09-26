@@ -1,0 +1,11 @@
+mock
+nose
+pika
+redis
+PyYAML
+protobuf
+flask
+python-consul
+prometheus_client
+requests
+biomaj_core
