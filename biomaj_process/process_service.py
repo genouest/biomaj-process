@@ -38,7 +38,16 @@ class ProcessService(object):
                                                   decode_responses=True)
 
         if rabbitmq and not self.channel:
-            connection = pika.BlockingConnection(pika.ConnectionParameters(self.config['rabbitmq']['host']))
+            connection = None
+            rabbitmq_port = self.config['rabbitmq']['port']
+            rabbitmq_user = self.config['rabbitmq']['user']
+            rabbitmq_password = self.config['rabbitmq']['password']
+            rabbitmq_vhost = self.config['rabbitmq']['virtual_host']
+            if rabbitmq_user:
+                credentials = pika.PlainCredentials(rabbitmq_user, rabbitmq_password)
+                connection = pika.BlockingConnection(pika.ConnectionParameters(self.config['rabbitmq']['host'], rabbitmq_port, rabbitmq_vhost, credentials))
+            else:
+                connection = pika.BlockingConnection(pika.ConnectionParameters(self.config['rabbitmq']['host']))
             self.channel = connection.channel()
             self.logger.info('Process service started')
 

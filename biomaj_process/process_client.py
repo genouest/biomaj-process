@@ -9,8 +9,8 @@ import pika
 
 class ProcessServiceClient(object):
 
-    def __init__(self, rabbitmq=None, logger=None):
-        self.rabbitmq = rabbitmq
+    def __init__(self, rabbitmq_host=None, rabbitmq_port=5672, rabbitmq_vhost='/', rabbitmq_user=None, rabbitmq_password=None, logger=None):
+        self.rabbitmq = rabbitmq_host
         self.remote = False
         self.session = None
         self.proxy = None
@@ -19,9 +19,14 @@ class ProcessServiceClient(object):
         self.logger = logging
         if logger:
             self.logger = logger
-        if self.rabbitmq:
+        if self.rabbitmq_host:
             self.remote = True
-            connection = pika.BlockingConnection(pika.ConnectionParameters(self.rabbitmq))
+            connection = None
+            if rabbitmq_user:
+                credentials = pika.PlainCredentials(rabbitmq_user, rabbitmq_password)
+                connection = pika.BlockingConnection(pika.ConnectionParameters(rabbitmq_host, rabbitmq_port, rabbitmq_vhost, credentials))
+            else:
+                connection = pika.BlockingConnection(pika.ConnectionParameters(rabbitmq_host, rabbitmq_port, rabbitmq_vhost))
             self.channel = connection.channel()
 
     def create_session(self, bank, proxy=None):
