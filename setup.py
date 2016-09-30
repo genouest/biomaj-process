@@ -21,7 +21,7 @@ config = {
     'url': 'http://biomaj.genouest.org',
     'download_url': 'http://biomaj.genouest.org',
     'author_email': 'olivier.sallou@irisa.fr',
-    'version': '3.0.0',
+    'version': '3.0.1',
      'classifiers': [
         # How mature is this project? Common values are
         #   3 - Alpha
@@ -41,9 +41,8 @@ config = {
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4'
     ],
-    'install_requires': ['nose',
+    'install_requires': [
                          'biomaj_core',
-                         'mock',
                          'pika',
                          'redis',
                          'PyYAML',
@@ -52,7 +51,9 @@ config = {
                          'prometheus_client',
                          'protobuf',
                          'requests'
-                         ],
+                        ],
+    'tests_require': ['nose', 'mock'],
+    'test_suite': 'nose.collector',
     'packages': find_packages(),
     'include_package_data': True,
     'scripts': ['bin/biomaj_process_consumer.py'],
