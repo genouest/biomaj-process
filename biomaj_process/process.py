@@ -113,16 +113,20 @@ class Process(object):
 
 
 class RemoteProcess(Process):
-    def __init__(self, name, exe, args, desc=None, proc_type=None, expand=True, bank_env=None, log_dir=None, rabbit_mq=None, proxy=None, bank=None):
+    def __init__(self, name, exe, args, desc=None, proc_type=None, expand=True, bank_env=None, log_dir=None, rabbit_mq=None, rabbit_mq_port=5672, rabbit_mq_user=None, rabbit_mq_password=None, rabbit_mq_virtualhost=None, proxy=None, bank=None):
         Process.__init__(self, name, exe, args, desc, proc_type, expand, bank_env, log_dir)
         self.proxy = proxy
         self.rabbit_mq = rabbit_mq
+        self.rabbit_mq_port = rabbit_mq_port
+        self.rabbit_mq_user = rabbit_mq_user
+        self.rabbit_mq_password = rabbit_mq_password
+        self.rabbit_mq_virtualhost = rabbit_mq_virtualhost
         self.bank = bank
         # Process.__init__(self, name, exe, args, desc, proc_type, expand, bank_env, log_dir)
         # (self, name, exe, args, desc=None, proc_type=None, expand=True, bank_env=None, log_dir=None)
 
     def run(self, simulate=False):
-        psc = ProcessServiceClient(self.rabbit_mq)
+        psc = ProcessServiceClient(self.rabbit_mq, self.rabbit_mq_port, self.rabbit_mq_virtualhost, self.rabbit_mq_user, self.rabbit_mq_password)
         session = psc.create_session(self.bank, self.proxy)
         from biomaj_process.message import message_pb2
         biomaj_process = message_pb2.Operation()
