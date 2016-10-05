@@ -73,7 +73,7 @@ class ProcessServiceClient(object):
                     info = result['info']
                     self.logger.error('Process:RemoteProcess:Error:' + str(result['info']))
             else:
-                time.sleep(1)
+                time.sleep(10)
         return (exitcode, info)
 
     def clean(self):
