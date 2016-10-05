@@ -111,6 +111,7 @@ class ProcessService(object):
         )
         exitcode = -1
         proc = {'bank': self.bank}
+
         try:
             process.run()
             exitcode = process.exitcode
@@ -118,12 +119,20 @@ class ProcessService(object):
             proc['execution_time'] = process.exec_time
         except Exception as e:
             self.logger.error('Execution error:%s:%s:%s' % (biomaj_file_info.bank, biomaj_file_info.session, str(e)))
-            self.redis_client.set(self.config['redis']['prefix'] + ':' + biomaj_file_info.bank + ':session:' + biomaj_file_info.session + ':error', 1)
-            self.redis_client.set(self.config['redis']['prefix'] + ':' + biomaj_file_info.bank + ':session:' + biomaj_file_info.session + ':error:info', str(e))
+            session = self.redis_client.get(self.config['redis']['prefix'] + ':' + biomaj_file_info.bank + ':session:' + biomaj_file_info.session)
+            if session:
+                # If session deleted, do not track
+                self.redis_client.set(self.config['redis']['prefix'] + ':' + biomaj_file_info.bank + ':session:' + biomaj_file_info.session + ':error', 1)
+                self.redis_client.set(self.config['redis']['prefix'] + ':' + biomaj_file_info.bank + ':session:' + biomaj_file_info.session + ':error:info', str(e))
+
         if exitcode > 0:
             proc['error'] = True
 
-        self.redis_client.set(self.config['redis']['prefix'] + ':' + biomaj_file_info.bank + ':session:' + biomaj_file_info.session + ':exitcode', exitcode)
+        session = self.redis_client.get(self.config['redis']['prefix'] + ':' + biomaj_file_info.bank + ':session:' + biomaj_file_info.session)
+        if session:
+            # If session deleted, do not track
+            self.redis_client.set(self.config['redis']['prefix'] + ':' + biomaj_file_info.bank + ':session:' + biomaj_file_info.session + ':exitcode', exitcode)
+
         return proc
 
     def ask_execute(self, biomaj_info_file):
