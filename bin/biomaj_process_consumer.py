@@ -6,6 +6,7 @@ import yaml
 import consul
 
 from biomaj_process.process_service import ProcessService
+from biomaj_core.utils import Utils
 
 config_file = 'config.yml'
 if 'BIOMAJ_CONFIG' in os.environ:
@@ -14,6 +15,7 @@ if 'BIOMAJ_CONFIG' in os.environ:
 config = None
 with open(config_file, 'r') as ymlfile:
     config = yaml.load(ymlfile)
+    Utils.service_config_override(config)
 
 
 def on_executed(bank, procs):

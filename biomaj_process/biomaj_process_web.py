@@ -18,6 +18,7 @@ import redis
 
 from biomaj_process.message import message_pb2
 from biomaj_process.process_service import ProcessService
+from biomaj_core.utils import Utils
 
 app = Flask(__name__)
 
@@ -32,6 +33,7 @@ if 'BIOMAJ_CONFIG' in os.environ:
 config = None
 with open(config_file, 'r') as ymlfile:
     config = yaml.load(ymlfile)
+    Utils.service_config_override(config)
 
 
 redis_client = redis.StrictRedis(
