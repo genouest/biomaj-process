@@ -112,5 +112,5 @@ def get_session(bank, session):
         exitcode = -1
     return jsonify({'error': error, 'exitcode': exitcode, 'info': info})
 
-if __name__ == "__main__":
+if __name__ == "__main__" or __name__ == "biomaj_process.biomaj_process_web":
     start_server(config)
