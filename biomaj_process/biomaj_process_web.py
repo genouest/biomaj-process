@@ -54,6 +54,7 @@ def consul_declare(config):
 
 consul_declare(config)
 
+
 @app.route('/api/process', methods=['GET'])
 def ping():
     return jsonify({'msg': 'pong'})
