@@ -44,19 +44,12 @@ redis_client = redis.StrictRedis(
 )
 
 
-def start_server(config):
-    context = None
-    if config['tls']['cert']:
-        context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-        context.load_cert_chain(config['tls']['cert'], config['tls']['key'])
-
+def consul_declare(config):
     if config['consul']['host']:
         consul_agent = consul.Consul(host=config['consul']['host'])
         consul_agent.agent.service.register('biomaj_process', service_id=config['consul']['id'], port=config['web']['port'], tags=['biomaj'])
         check = consul.Check.http(url=config['web']['hostname'] + '/api/process', interval=20)
         consul_agent.agent.check.register(config['consul']['id'] + '_check', check=check, service_id=config['consul']['id'])
-
-    app.run(host='0.0.0.0', port=config['web']['port'], ssl_context=context, threaded=True, debug=config['web']['debug'])
 
 
 @app.route('/api/process', methods=['GET'])
@@ -112,5 +105,10 @@ def get_session(bank, session):
         exitcode = -1
     return jsonify({'error': error, 'exitcode': exitcode, 'info': info})
 
-if __name__ == "__main__" or __name__ == "biomaj_process.biomaj_process_web":
-    start_server(config)
+if __name__ == "__main__":
+    consul_declare(config)
+    context = None
+    if config['tls']['cert']:
+        context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+        context.load_cert_chain(config['tls']['cert'], config['tls']['key'])
+    app.run(host='0.0.0.0', port=config['web']['port'], ssl_context=context, threaded=True, debug=config['web']['debug'])
