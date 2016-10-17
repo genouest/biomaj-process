@@ -52,6 +52,8 @@ def consul_declare(config):
         consul_agent.agent.check.register(config['consul']['id'] + '_check', check=check, service_id=config['consul']['id'])
 
 
+consul_declare(config)
+
 @app.route('/api/process', methods=['GET'])
 def ping():
     return jsonify({'msg': 'pong'})
@@ -106,7 +108,6 @@ def get_session(bank, session):
     return jsonify({'error': error, 'exitcode': exitcode, 'info': info})
 
 if __name__ == "__main__":
-    consul_declare(config)
     context = None
     if config['tls']['cert']:
         context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
