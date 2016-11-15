@@ -108,6 +108,7 @@ def get_session(bank, session):
         exitcode = -1
     return jsonify({'error': error, 'exitcode': exitcode, 'info': info})
 
+
 if __name__ == "__main__":
     context = None
     if config['tls']['cert']:
