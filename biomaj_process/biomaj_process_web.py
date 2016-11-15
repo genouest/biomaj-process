@@ -47,7 +47,7 @@ redis_client = redis.StrictRedis(
 def consul_declare(config):
     if config['consul']['host']:
         consul_agent = consul.Consul(host=config['consul']['host'])
-        consul_agent.agent.service.register('biomaj_process', service_id=config['consul']['id'], address=config['web']['hostname'], port=config['web']['port'], tags=['biomaj'])
+        consul_agent.agent.service.register('biomaj-process', service_id=config['consul']['id'], address=config['web']['hostname'], port=config['web']['port'], tags=['biomaj'])
         check = consul.Check.http(url='http://' + config['web']['hostname'] + ':' + str(config['web']['port']) + '/api/process', interval=20)
         consul_agent.agent.check.register(config['consul']['id'] + '_check', check=check, service_id=config['consul']['id'])
 
