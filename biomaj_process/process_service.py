@@ -9,6 +9,7 @@ import pika
 
 from biomaj_process.message import message_pb2
 from biomaj_process.process import Process
+from biomaj_core.utils import Utils
 
 
 class ProcessService(object):
@@ -23,6 +24,7 @@ class ProcessService(object):
         self.executed_callback = None
         with open(config_file, 'r') as ymlfile:
             self.config = yaml.load(ymlfile)
+            Utils.service_config_override(self.config)
 
         if 'log_config' in self.config:
             for handler in list(self.config['log_config']['handlers'].keys()):
