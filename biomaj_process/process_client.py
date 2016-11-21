@@ -19,7 +19,7 @@ class ProcessServiceClient(object):
         self.logger = logging
         if logger:
             self.logger = logger
-        if self.rabbitmq_host:
+        if rabbitmq_host:
             self.remote = True
             connection = None
             if rabbitmq_user:
