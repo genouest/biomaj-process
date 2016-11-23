@@ -60,7 +60,7 @@ def ping():
     return jsonify({'msg': 'pong'})
 
 
-@app.route('/api/process/metrics', methods=['GET'])
+@app.route('/metrics', methods=['GET'])
 def metrics():
     return generate_latest()
 
