@@ -68,6 +68,13 @@ class Process(object):
         self.exec_time = 0
         self.proc_type = proc_type
 
+    def set_trace(self, trace_id, parent_id):
+        '''
+        Set span info for zipkin integration, optional
+        '''
+        self.trace_id = trace_id
+        self.parent_id = parent_id
+
     def run(self, simulate=False):
         '''
         Execute process
@@ -126,13 +133,6 @@ class RemoteProcess(Process):
         self.parent_id = None
         # Process.__init__(self, name, exe, args, desc, proc_type, expand, bank_env, log_dir)
         # (self, name, exe, args, desc=None, proc_type=None, expand=True, bank_env=None, log_dir=None)
-
-    def set_trace(self, trace_id, parent_id):
-        '''
-        Set span info for zipkin integration, optional
-        '''
-        self.trace_id = trace_id
-        self.parent_id = parent_id
 
     def run(self, simulate=False):
         psc = ProcessServiceClient(self.rabbit_mq, self.rabbit_mq_port, self.rabbit_mq_virtualhost, self.rabbit_mq_user, self.rabbit_mq_password)
