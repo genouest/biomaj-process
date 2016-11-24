@@ -134,7 +134,6 @@ class RemoteProcess(Process):
         self.trace_id = trace_id
         self.parent_id = parent_id
 
-
     def run(self, simulate=False):
         psc = ProcessServiceClient(self.rabbit_mq, self.rabbit_mq_port, self.rabbit_mq_virtualhost, self.rabbit_mq_user, self.rabbit_mq_password)
         session = psc.create_session(self.bank, self.proxy)
