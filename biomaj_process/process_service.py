@@ -162,10 +162,13 @@ class ProcessService(object):
             if operation.type == 1:
                 message = operation.process
                 self.logger.debug('Execute operation %s, %s' % (message.bank, message.session))
+                span = None
                 if operation.trace and operation.trace.trace_id:
                     span = Zipkin('biomaj-process-executor', message.exe, trace_id=operation.trace.trace_id, parent_id=operation.trace.parent_id)
 
                 proc = self.execute(message)
+                if span:
+                    span.trace()
                 self.executed_callback(message.bank, [proc])
             else:
                 self.logger.warn('Wrong message type, skipping')
