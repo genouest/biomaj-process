@@ -28,5 +28,12 @@ message Operation {
 
     optional Process process = 1;
 
-    required OPERATION type =2 [default=EXECUTE];
+    required OPERATION type = 2 [default=EXECUTE];
+
+    message Trace {
+        required string trace_id = 1;
+        required string span_id = 2;
+    }
+
+    optional Trace trace = 3;
 }

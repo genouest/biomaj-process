@@ -11,6 +11,8 @@ from biomaj_process.message import message_pb2
 from biomaj_process.process import Process
 from biomaj_core.utils import Utils
 
+from biomaj_zipkin.zipkin import Zipkin
+
 
 class ProcessService(object):
 
@@ -25,6 +27,8 @@ class ProcessService(object):
         with open(config_file, 'r') as ymlfile:
             self.config = yaml.load(ymlfile)
             Utils.service_config_override(self.config)
+
+        Zipkin.set_config(self.config)
 
         if 'log_config' in self.config:
             for handler in list(self.config['log_config']['handlers'].keys()):
@@ -158,6 +162,9 @@ class ProcessService(object):
             if operation.type == 1:
                 message = operation.process
                 self.logger.debug('Execute operation %s, %s' % (message.bank, message.session))
+                if operation.trace and operation.trace.trace_id:
+                    span = Zipkin('biomaj-process-executor', message.exe, trace_id=operation.trace.trace_id, parent_id=operation.trace.parent_id)
+
                 proc = self.execute(message)
                 self.executed_callback(message.bank, [proc])
             else:

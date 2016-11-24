@@ -122,8 +122,18 @@ class RemoteProcess(Process):
         self.rabbit_mq_password = rabbit_mq_password
         self.rabbit_mq_virtualhost = rabbit_mq_virtualhost
         self.bank = bank
+        self.trace_id = None
+        self.parent_id = None
         # Process.__init__(self, name, exe, args, desc, proc_type, expand, bank_env, log_dir)
         # (self, name, exe, args, desc=None, proc_type=None, expand=True, bank_env=None, log_dir=None)
+
+    def set_trace(self, trace_id, parent_id):
+        '''
+        Set span info for zipkin integration, optional
+        '''
+        self.trace_id = trace_id
+        self.parent_id = parent_id
+
 
     def run(self, simulate=False):
         psc = ProcessServiceClient(self.rabbit_mq, self.rabbit_mq_port, self.rabbit_mq_virtualhost, self.rabbit_mq_user, self.rabbit_mq_password)
@@ -148,6 +158,11 @@ class RemoteProcess(Process):
         process.description = self.desc
         process.proc_type = self.proc_type
         biomaj_process.process.MergeFrom(process)
+        if self.trace_id:
+            trace = message_pb2.Operation.Trace()
+            trace.trace_id = self.trace_id
+            trace.parent_id = self.parent_id
+            biomaj_process.trace.MergeFrom(trace)
         psc.execute_process(biomaj_process)
         (exitcode, info) = psc.wait_for_process()
         psc.clean()
