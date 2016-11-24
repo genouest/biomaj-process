@@ -67,6 +67,8 @@ class Process(object):
         self.exitcode = -1
         self.exec_time = 0
         self.proc_type = proc_type
+        self.trace_id = None
+        self.parent_id = None
 
     def set_trace(self, trace_id, parent_id):
         '''
