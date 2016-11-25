@@ -162,7 +162,7 @@ class RemoteProcess(Process):
         if self.trace_id:
             trace = message_pb2.Operation.Trace()
             trace.trace_id = self.trace_id
-            trace.parent_id = self.parent_id
+            trace.span_id = self.parent_id
             biomaj_process.trace.MergeFrom(trace)
         psc.execute_process(biomaj_process)
         (exitcode, info) = psc.wait_for_process()
