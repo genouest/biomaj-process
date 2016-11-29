@@ -1,2 +1,4 @@
+3.0.1:
+  bug fixes
 3.0.0:
   move process management out of biomaj main package
