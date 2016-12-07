@@ -1,3 +1,5 @@
+3.0.2:
+  add logging info
 3.0.1:
   bug fixes
 3.0.0:

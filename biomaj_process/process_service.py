@@ -93,7 +93,7 @@ class ProcessService(object):
         '''
         List remote content
         '''
-        self.logger.debug('New process request %s session %s' % (biomaj_file_info.bank, biomaj_file_info.session))
+        self.logger.debug('New process request %s session %s, execute %s' % (biomaj_file_info.bank, biomaj_file_info.session, biomaj_file_info.exe))
         session = self.redis_client.get(self.config['redis']['prefix'] + ':' + biomaj_file_info.bank + ':session:' + biomaj_file_info.session)
         if not session:
             self.logger.debug('Session %s for bank %s has expired, skipping execution of %s' % (biomaj_file_info.session, biomaj_file_info.bank, biomaj_file_info.exe))
@@ -130,7 +130,7 @@ class ProcessService(object):
                 # If session deleted, do not track
                 self.redis_client.set(self.config['redis']['prefix'] + ':' + biomaj_file_info.bank + ':session:' + biomaj_file_info.session + ':error', 1)
                 self.redis_client.set(self.config['redis']['prefix'] + ':' + biomaj_file_info.bank + ':session:' + biomaj_file_info.session + ':error:info', str(e))
-
+        self.logger.debug('Execution result: %d' % (exitcode))
         if exitcode > 0:
             proc['error'] = True
 
