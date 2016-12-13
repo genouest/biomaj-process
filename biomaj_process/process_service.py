@@ -100,7 +100,7 @@ class ProcessService(object):
             self.logger.debug('Session %s for bank %s has expired, skipping execution of %s' % (biomaj_file_info.session, biomaj_file_info.bank, biomaj_file_info.exe))
             proc = {'bank': self.bank}
             proc['exitcode'] = 129
-            proc['execution_time']= 0
+            proc['execution_time'] = 0
             return
 
         bank_env = {}
@@ -145,7 +145,7 @@ class ProcessService(object):
             proc['execution_time'] = process.exec_time
         except Exception as e:
             proc['exitcode'] = 129
-            proc['execution_time']= 0
+            proc['execution_time'] = 0
             self.logger.error('Execution error:%s:%s:%s' % (biomaj_file_info.bank, biomaj_file_info.session, str(e)))
             session = self.redis_client.get(self.config['redis']['prefix'] + ':' + biomaj_file_info.bank + ':session:' + biomaj_file_info.session)
             if session:
