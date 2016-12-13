@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 import datetime
 import time
+import sys
 
 from biomaj_process.process_client import ProcessServiceClient
 
@@ -122,7 +123,7 @@ class Process(object):
 
 
 class RemoteProcess(Process):
-    def __init__(self, name, exe, args, desc=None, proc_type=None, expand=True, bank_env=None, log_dir=None, rabbit_mq=None, rabbit_mq_port=5672, rabbit_mq_user=None, rabbit_mq_password=None, rabbit_mq_virtualhost=None, proxy=None, bank=None):
+    def __init__(self, name, exe, args, desc=None, proc_type=None, docker=None, docker_sudo=False, expand=True, bank_env=None, log_dir=None, rabbit_mq=None, rabbit_mq_port=5672, rabbit_mq_user=None, rabbit_mq_password=None, rabbit_mq_virtualhost=None, proxy=None, bank=None):
         Process.__init__(self, name, exe, args, desc, proc_type, expand, bank_env, log_dir)
         self.proxy = proxy
         self.rabbit_mq = rabbit_mq
@@ -133,6 +134,8 @@ class RemoteProcess(Process):
         self.bank = bank
         self.trace_id = None
         self.parent_id = None
+        self.docker = docker
+        self.docker_sudo = docker_sudo
         # Process.__init__(self, name, exe, args, desc, proc_type, expand, bank_env, log_dir)
         # (self, name, exe, args, desc=None, proc_type=None, expand=True, bank_env=None, log_dir=None)
 
@@ -158,6 +161,12 @@ class RemoteProcess(Process):
         process.name = self.name
         process.description = self.desc
         process.proc_type = self.proc_type
+        if self.docker:
+            process.is_docker = True
+            docker_info = message_pb2.Process.Docker()
+            docker_info.image = self.docker
+            docker_info.use_sudo = self.docker_sudo
+            process.docker.MergeFrom(docker_info)
         biomaj_process.process.MergeFrom(process)
         if self.trace_id:
             trace = message_pb2.Operation.Trace()
@@ -174,10 +183,12 @@ class RemoteProcess(Process):
 
 
 class DockerProcess(Process):
-    def __init__(self, name, exe, args, desc=None, proc_type=None, docker=None, expand=True, bank_env=None, log_dir=None, use_sudo=True):
+    def __init__(self, name, exe, args, desc=None, proc_type=None, docker=None, expand=True, bank_env=None, log_dir=None, use_sudo=True, docker_url=None, run_as_root=False):
         Process.__init__(self, name, exe, args, desc, proc_type, expand, bank_env, log_dir)
         self.docker = docker
+        self.docker_url = docker_url
         self.use_sudo = use_sudo
+        self.run_as_root = run_as_root
 
     def run(self, simulate=False):
         '''
@@ -188,6 +199,9 @@ class DockerProcess(Process):
         :return: exit code of process
         '''
         use_sudo = ''
+        docker_url = ''
+        if self.docker_url:
+            docker_url = '-H ' + self.docker_url
         if self.use_sudo:
             use_sudo = 'sudo'
         release_dir = self.bank_env['datadir'] + '/' + self.bank_env['dirversion'] + '/' + self.bank_env['localrelease']
@@ -197,28 +211,56 @@ class DockerProcess(Process):
                 env += ' -e "{0}={1}"'.format(key, value)
         # docker run with data.dir env as shared volume
         # forwarded env variables
-        cmd = '''uid={uid}
-    gid={gid}
-    {sudo} docker pull {container_id}
-    {sudo} docker run --rm -w {bank_dir}  -v {data_dir}:{data_dir} {env} {container_id} \
-    bash -c "groupadd --gid {gid} {group_biomaj} && useradd --uid {uid} --gid {gid} {user_biomaj}; \
-    {exe} {args}; \
-    chown -R {uid}:{gid} {bank_dir}"'''.format(
-            uid=os.getuid(),
-            gid=os.getgid(),
-            data_dir=self.bank_env['datadir'],
-            env=env,
-            container_id=self.docker,
-            group_biomaj='biomaj',
-            user_biomaj='biomaj',
-            exe=self.exe,
-            args=' '.join(self.args),
-            bank_dir=release_dir,
-            sudo=use_sudo
-        )
+        data_dir = self.bank_env['datadir']
+        if 'BIOMAJ_DIR' in os.environ and os.environ['BIOMAJ_DIR'] and not os.environ['BIOMAJ_DIR'].startswith('local'):
+            data_dir = os.environ['BIOMAJ_DIR']
+
+        if not self.run_as_root:
+            cmd = '''uid={uid}
+        gid={gid}
+        {sudo} docker {docker_url} pull {container_id}
+        {sudo} docker {docker_url}  run --rm -w {bank_dir}  -v {data_dir}:{data_dir} {env} {container_id} \
+        bash -c "groupadd --gid {gid} {group_biomaj} && useradd --uid {uid} --gid {gid} {user_biomaj}; \
+        {exe} {args}; \
+        chown -R {uid}:{gid} {bank_dir}"'''.format(
+                uid=os.getuid(),
+                gid=os.getgid(),
+                data_dir=data_dir,
+                env=env,
+                container_id=self.docker,
+                group_biomaj='biomaj',
+                user_biomaj='biomaj',
+                exe=self.exe,
+                args=' '.join(self.args),
+                bank_dir=release_dir,
+                sudo=use_sudo,
+                docker_url=docker_url
+            )
+        else:
+            cmd = '''
+        {sudo} docker {docker_url} pull {container_id}
+        {sudo} docker {docker_url} run --rm -w {bank_dir}  -v {data_dir}:{data_dir} {env} {container_id} \
+        {exe} {args} \
+        '''.format(
+                uid=os.getuid(),
+                gid=os.getgid(),
+                data_dir=data_dir,
+                env=env,
+                container_id=self.docker,
+                group_biomaj='biomaj',
+                user_biomaj='biomaj',
+                exe=self.exe,
+                args=' '.join(self.args),
+                bank_dir=release_dir,
+                sudo=use_sudo,
+                docker_url=docker_url
+            )
 
         (handler, tmpfile) = tempfile.mkstemp('biomaj')
-        os.write(handler, cmd)
+        if sys.version_info[0] < 3:
+            os.write(handler, cmd)
+        else:
+            os.write(handler, bytes(cmd, 'UTF-8'))
         os.close(handler)
         os.chmod(tmpfile, 0o755)
         args = [tmpfile]
@@ -229,12 +271,20 @@ class DockerProcess(Process):
             logging.info('PROCESS:RUN:Docker:' + self.docker + ':' + self.name)
             with open(self.output_file, 'w') as fout:
                 with open(self.error_file, 'w') as ferr:
+                    start_time = datetime.datetime.now()
+                    start_time = time.mktime(start_time.timetuple())
                     if self.expand:
                         args = " ".join(args)
                         proc = subprocess.Popen(args, stdout=fout, stderr=ferr, env=self.bank_env, shell=True)
                     else:
                         proc = subprocess.Popen(args, stdout=fout, stderr=ferr, env=self.bank_env, shell=False)
                     proc.wait()
+                    end_time = datetime.datetime.now()
+                    end_time = time.mktime(end_time.timetuple())
+
+                    self.exec_time = end_time - start_time
+
+                    self.exitcode = proc.returncode
                     if proc.returncode == 0:
                         err = True
                     else:

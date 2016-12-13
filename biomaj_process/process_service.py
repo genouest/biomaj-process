@@ -9,6 +9,7 @@ import pika
 
 from biomaj_process.message import message_pb2
 from biomaj_process.process import Process
+from biomaj_process.process import DockerProcess
 from biomaj_core.utils import Utils
 
 from biomaj_zipkin.zipkin import Zipkin
@@ -97,6 +98,9 @@ class ProcessService(object):
         session = self.redis_client.get(self.config['redis']['prefix'] + ':' + biomaj_file_info.bank + ':session:' + biomaj_file_info.session)
         if not session:
             self.logger.debug('Session %s for bank %s has expired, skipping execution of %s' % (biomaj_file_info.session, biomaj_file_info.bank, biomaj_file_info.exe))
+            proc = {'bank': self.bank}
+            proc['exitcode'] = 129
+            proc['execution_time']= 0
             return
 
         bank_env = {}
@@ -105,16 +109,32 @@ class ProcessService(object):
 
         args = ' '.join(biomaj_file_info.args)
 
-        process = Process(
-            biomaj_file_info.name,
-            biomaj_file_info.exe,
-            args,
-            biomaj_file_info.description,
-            biomaj_file_info.proc_type,
-            biomaj_file_info.shell_expand,
-            bank_env,
-            biomaj_file_info.log_dir
-        )
+        if biomaj_file_info.is_docker:
+            process = DockerProcess(
+                biomaj_file_info.name,
+                biomaj_file_info.exe,
+                args,
+                desc=biomaj_file_info.description,
+                proc_type=biomaj_file_info.proc_type,
+                expand=biomaj_file_info.shell_expand,
+                bank_env=bank_env,
+                log_dir=biomaj_file_info.log_dir,
+                docker_url=self.config['docker']['url'],
+                docker=biomaj_file_info.docker.image,
+                run_as_root=True,
+                use_sudo=biomaj_file_info.docker.use_sudo
+            )
+        else:
+            process = Process(
+                biomaj_file_info.name,
+                biomaj_file_info.exe,
+                args,
+                desc=biomaj_file_info.description,
+                proc_type=biomaj_file_info.proc_type,
+                expand=biomaj_file_info.shell_expand,
+                bank_env=bank_env,
+                log_dir=biomaj_file_info.log_dir
+            )
         exitcode = -1
         proc = {'bank': self.bank}
 
@@ -124,6 +144,8 @@ class ProcessService(object):
             proc['exitcode'] = exitcode
             proc['execution_time'] = process.exec_time
         except Exception as e:
+            proc['exitcode'] = 129
+            proc['execution_time']= 0
             self.logger.error('Execution error:%s:%s:%s' % (biomaj_file_info.bank, biomaj_file_info.session, str(e)))
             session = self.redis_client.get(self.config['redis']['prefix'] + ':' + biomaj_file_info.bank + ':session:' + biomaj_file_info.session)
             if session:
@@ -169,7 +191,8 @@ class ProcessService(object):
                 proc = self.execute(message)
                 if span:
                     span.trace()
-                self.executed_callback(message.bank, [proc])
+                if proc:
+                    self.executed_callback(message.bank, [proc])
             else:
                 self.logger.warn('Wrong message type, skipping')
         except Exception as e:

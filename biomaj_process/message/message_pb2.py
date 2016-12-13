@@ -18,7 +18,7 @@ _sym_db = _symbol_database.Default()
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='message.proto',
   package='biomaj',
-  serialized_pb=_b('\n\rmessage.proto\x12\x06\x62iomaj\"\xf8\x01\n\x07Process\x12\x0c\n\x04\x62\x61nk\x18\x01 \x02(\t\x12\x0f\n\x07session\x18\x02 \x02(\t\x12\x0f\n\x07log_dir\x18\x03 \x02(\t\x12\x0b\n\x03\x65xe\x18\x04 \x02(\t\x12\x0c\n\x04\x61rgs\x18\x05 \x03(\t\x12(\n\x08\x65nv_vars\x18\x06 \x03(\x0b\x32\x16.biomaj.Process.EnvVar\x12\x1b\n\x0cshell_expand\x18\x07 \x01(\x08:\x05\x66\x61lse\x12\x0c\n\x04name\x18\x08 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\t \x01(\t\x12\x11\n\tproc_type\x18\n \x01(\t\x1a%\n\x06\x45nvVar\x12\x0c\n\x04name\x18\x01 \x02(\t\x12\r\n\x05value\x18\x02 \x02(\t\"\xcf\x01\n\tOperation\x12 \n\x07process\x18\x01 \x01(\x0b\x32\x0f.biomaj.Process\x12\x32\n\x04type\x18\x02 \x02(\x0e\x32\x1b.biomaj.Operation.OPERATION:\x07\x45XECUTE\x12&\n\x05trace\x18\x03 \x01(\x0b\x32\x17.biomaj.Operation.Trace\x1a*\n\x05Trace\x12\x10\n\x08trace_id\x18\x01 \x02(\t\x12\x0f\n\x07span_id\x18\x02 \x02(\t\"\x18\n\tOPERATION\x12\x0b\n\x07\x45XECUTE\x10\x01')
+  serialized_pb=_b('\n\rmessage.proto\x12\x06\x62iomaj\"\xec\x02\n\x07Process\x12\x0c\n\x04\x62\x61nk\x18\x01 \x02(\t\x12\x0f\n\x07session\x18\x02 \x02(\t\x12\x0f\n\x07log_dir\x18\x03 \x02(\t\x12\x0b\n\x03\x65xe\x18\x04 \x02(\t\x12\x0c\n\x04\x61rgs\x18\x05 \x03(\t\x12(\n\x08\x65nv_vars\x18\x06 \x03(\x0b\x32\x16.biomaj.Process.EnvVar\x12\x1b\n\x0cshell_expand\x18\x07 \x01(\x08:\x05\x66\x61lse\x12\x0c\n\x04name\x18\x08 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\t \x01(\t\x12\x11\n\tproc_type\x18\n \x01(\t\x12\x18\n\tis_docker\x18\x0b \x01(\x08:\x05\x66\x61lse\x12&\n\x06\x64ocker\x18\x0c \x01(\x0b\x32\x16.biomaj.Process.Docker\x1a%\n\x06\x45nvVar\x12\x0c\n\x04name\x18\x01 \x02(\t\x12\r\n\x05value\x18\x02 \x02(\t\x1a\x30\n\x06\x44ocker\x12\r\n\x05image\x18\x01 \x02(\t\x12\x17\n\x08use_sudo\x18\x02 \x01(\x08:\x05\x66\x61lse\"\xcf\x01\n\tOperation\x12 \n\x07process\x18\x01 \x01(\x0b\x32\x0f.biomaj.Process\x12\x32\n\x04type\x18\x02 \x02(\x0e\x32\x1b.biomaj.Operation.OPERATION:\x07\x45XECUTE\x12&\n\x05trace\x18\x03 \x01(\x0b\x32\x17.biomaj.Operation.Trace\x1a*\n\x05Trace\x12\x10\n\x08trace_id\x18\x01 \x02(\t\x12\x0f\n\x07span_id\x18\x02 \x02(\t\"\x18\n\tOPERATION\x12\x0b\n\x07\x45XECUTE\x10\x01')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -37,8 +37,8 @@ _OPERATION_OPERATION = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=460,
-  serialized_end=484,
+  serialized_start=576,
+  serialized_end=600,
 )
 _sym_db.RegisterEnumDescriptor(_OPERATION_OPERATION)
 
@@ -75,8 +75,44 @@ _PROCESS_ENVVAR = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=237,
-  serialized_end=274,
+  serialized_start=303,
+  serialized_end=340,
+)
+
+_PROCESS_DOCKER = _descriptor.Descriptor(
+  name='Docker',
+  full_name='biomaj.Process.Docker',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='image', full_name='biomaj.Process.Docker.image', index=0,
+      number=1, type=9, cpp_type=9, label=2,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='use_sudo', full_name='biomaj.Process.Docker.use_sudo', index=1,
+      number=2, type=8, cpp_type=7, label=1,
+      has_default_value=True, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=342,
+  serialized_end=390,
 )
 
 _PROCESS = _descriptor.Descriptor(
@@ -156,10 +192,24 @@ _PROCESS = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='is_docker', full_name='biomaj.Process.is_docker', index=10,
+      number=11, type=8, cpp_type=7, label=1,
+      has_default_value=True, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='docker', full_name='biomaj.Process.docker', index=11,
+      number=12, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
-  nested_types=[_PROCESS_ENVVAR, ],
+  nested_types=[_PROCESS_ENVVAR, _PROCESS_DOCKER, ],
   enum_types=[
   ],
   options=None,
@@ -168,7 +218,7 @@ _PROCESS = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=26,
-  serialized_end=274,
+  serialized_end=390,
 )
 
 
@@ -204,8 +254,8 @@ _OPERATION_TRACE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=416,
-  serialized_end=458,
+  serialized_start=532,
+  serialized_end=574,
 )
 
 _OPERATION = _descriptor.Descriptor(
@@ -248,12 +298,14 @@ _OPERATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=277,
-  serialized_end=484,
+  serialized_start=393,
+  serialized_end=600,
 )
 
 _PROCESS_ENVVAR.containing_type = _PROCESS
+_PROCESS_DOCKER.containing_type = _PROCESS
 _PROCESS.fields_by_name['env_vars'].message_type = _PROCESS_ENVVAR
+_PROCESS.fields_by_name['docker'].message_type = _PROCESS_DOCKER
 _OPERATION_TRACE.containing_type = _OPERATION
 _OPERATION.fields_by_name['process'].message_type = _PROCESS
 _OPERATION.fields_by_name['type'].enum_type = _OPERATION_OPERATION
@@ -270,12 +322,20 @@ Process = _reflection.GeneratedProtocolMessageType('Process', (_message.Message,
     # @@protoc_insertion_point(class_scope:biomaj.Process.EnvVar)
     ))
   ,
+
+  Docker = _reflection.GeneratedProtocolMessageType('Docker', (_message.Message,), dict(
+    DESCRIPTOR = _PROCESS_DOCKER,
+    __module__ = 'message_pb2'
+    # @@protoc_insertion_point(class_scope:biomaj.Process.Docker)
+    ))
+  ,
   DESCRIPTOR = _PROCESS,
   __module__ = 'message_pb2'
   # @@protoc_insertion_point(class_scope:biomaj.Process)
   ))
 _sym_db.RegisterMessage(Process)
 _sym_db.RegisterMessage(Process.EnvVar)
+_sym_db.RegisterMessage(Process.Docker)
 
 Operation = _reflection.GeneratedProtocolMessageType('Operation', (_message.Message,), dict(
 

@@ -24,6 +24,10 @@ web:
     port: 5000
     local_endpoint: 'http://127.0.0.1:5000'
 
+docker:
+    # URL to connect to docker, use null if direct docker access, else put IP of the host (not localhost)
+    url: 'tcp://127.0.0.1:2375'
+
 tls:
     key: null
     cert: null

@@ -1,5 +1,6 @@
 3.0.2:
   add logging info
+  execute docker processes in biomaj micro service
 3.0.1:
   bug fixes
 3.0.0:

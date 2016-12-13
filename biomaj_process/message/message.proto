@@ -17,6 +17,13 @@ message Process {
     optional string name = 8;
     optional string description = 9;
     optional string proc_type = 10;
+
+    message Docker {
+        required string image = 1;
+        optional bool use_sudo = 2 [default=false];
+    }
+    optional bool is_docker = 11 [default=false];
+    optional Docker docker = 12;
 }
 
 
