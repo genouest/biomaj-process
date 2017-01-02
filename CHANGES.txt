@@ -1,3 +1,5 @@
+3.0.3:
+  fix prometheus + gunicorn multi process
 3.0.2:
   add logging info
   execute docker processes in biomaj micro service

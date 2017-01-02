@@ -13,6 +13,8 @@ from flask import request
 from prometheus_client import Counter
 from prometheus_client import Gauge
 from prometheus_client.exposition import generate_latest
+from prometheus_client import multiprocess
+from prometheus_client import CollectorRegistry
 import consul
 import redis
 
@@ -62,7 +64,9 @@ def ping():
 
 @app.route('/metrics', methods=['GET'])
 def metrics():
-    return generate_latest()
+    registry = CollectorRegistry()
+    multiprocess.MultiProcessCollector(registry)
+    return generate_latest(registry)
 
 
 @app.route('/api/process/metrics', methods=['POST'])
