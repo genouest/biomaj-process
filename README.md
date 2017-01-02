@@ -15,11 +15,6 @@ To compile protobuf, in biomaj_process/message:
 
     flake8  biomaj_process
 
-# Prometheus metrics
-
-Endpoint: /api/process/metrics
-
-
 # Run
 
 ## Message consumer:
