@@ -19,6 +19,9 @@ from biomaj_core.utils import Utils
 from biomaj_zipkin.zipkin import Zipkin
 
 
+app = Flask(__name__)
+
+
 @app.route('/api/process-message')
 def ping():
     return jsonify({'msg': 'pong'})
