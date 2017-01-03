@@ -4,8 +4,11 @@ import yaml
 import redis
 import uuid
 import traceback
+import threading
 
 import pika
+from flask import Flask
+from flask import jsonify
 
 from biomaj_process.message import message_pb2
 from biomaj_process.process import Process
@@ -14,6 +17,34 @@ from biomaj_core.utils import Utils
 
 from biomaj_zipkin.zipkin import Zipkin
 
+
+@app.route('/api/process-message')
+def ping():
+    return jsonify({'msg': 'pong'})
+
+
+def start_web(config):
+    app.run(host='0.0.0.0', port=config['web']['port'])
+
+
+def consul_declare(config):
+    if config['consul']['host']:
+        consul_agent = consul.Consul(host=config['consul']['host'])
+        consul_agent.agent.service.register(
+            'biomaj-process-message',
+            service_id=config['consul']['id'],
+            address=config['web']['hostname'],
+            port=config['web']['port'],
+            tags=['biomaj']
+        )
+        check = consul.Check.http(
+            url='http://' + config['web']['hostname'] + ':' + str(config['web']['port']) + '/api/process-message',
+            interval=20
+        )
+        consul_agent.agent.check.register(
+            config['consul']['id'] + '_check',
+            check=check,
+            service_id=config['consul']['id']
 
 class ProcessService(object):
 
@@ -28,6 +59,10 @@ class ProcessService(object):
         with open(config_file, 'r') as ymlfile:
             self.config = yaml.load(ymlfile)
             Utils.service_config_override(self.config)
+
+        consul_declare(self.config)
+        web_thread = threading.Thread(target=start_web, args=(self.config,))
+        web_thread.start()
 
         Zipkin.set_config(self.config)
 
