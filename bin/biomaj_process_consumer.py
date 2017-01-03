@@ -36,4 +36,5 @@ def on_executed(bank, procs):
 
 process = ProcessService(config_file)
 process.on_executed_callback(on_executed)
+process.supervise()
 process.wait_for_messages()
