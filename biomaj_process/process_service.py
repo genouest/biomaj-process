@@ -50,6 +50,9 @@ def consul_declare(config):
             check=check,
             service_id=config['consul']['id']
         )
+        return True
+    else:
+        return False
 
 
 class ProcessService(object):
@@ -66,9 +69,9 @@ class ProcessService(object):
             self.config = yaml.load(ymlfile)
             Utils.service_config_override(self.config)
 
-        consul_declare(self.config)
-        web_thread = threading.Thread(target=start_web, args=(self.config,))
-        web_thread.start()
+        if consul_declare(self.config):
+            web_thread = threading.Thread(target=start_web, args=(self.config,))
+            web_thread.start()
 
         Zipkin.set_config(self.config)
 
