@@ -45,6 +45,7 @@ def consul_declare(config):
             config['consul']['id'] + '_check',
             check=check,
             service_id=config['consul']['id']
+        )
 
 class ProcessService(object):
 
