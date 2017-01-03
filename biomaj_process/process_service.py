@@ -9,6 +9,7 @@ import threading
 import pika
 from flask import Flask
 from flask import jsonify
+import consul
 
 from biomaj_process.message import message_pb2
 from biomaj_process.process import Process
@@ -46,6 +47,7 @@ def consul_declare(config):
             check=check,
             service_id=config['consul']['id']
         )
+
 
 class ProcessService(object):
 
