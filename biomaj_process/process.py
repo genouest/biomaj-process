@@ -211,9 +211,9 @@ class DockerProcess(Process):
                 env += ' -e "{0}={1}"'.format(key, value)
         # docker run with data.dir env as shared volume
         # forwarded env variables
-        data_dir = self.bank_env['datadir']
+        data_dir = self.bank_env['datadir'] + '/' + self.bank_env['dirversion']
         if 'BIOMAJ_DIR' in os.environ and os.environ['BIOMAJ_DIR'] and not os.environ['BIOMAJ_DIR'].startswith('local'):
-            data_dir = os.environ['BIOMAJ_DIR']
+            data_dir = os.environ['BIOMAJ_DIR'] + '/' + self.bank_env['dirversion']
 
         if not self.run_as_root:
             cmd = '''uid={uid}

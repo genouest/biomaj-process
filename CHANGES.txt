@@ -1,5 +1,8 @@
+3.0.4:
+  for docker, restrict directory to bank directory
 3.0.3:
   fix prometheus + gunicorn multi process
+  add consul supervision
 3.0.2:
   add logging info
   execute docker processes in biomaj micro service
