@@ -206,20 +206,28 @@ class DockerProcess(Process):
             use_sudo = 'sudo'
         release_dir = self.bank_env['datadir'] + '/' + self.bank_env['dirversion'] + '/' + self.bank_env['localrelease']
         env = ''
+        depends = []
         if self.bank_env:
             for key, value in self.bank_env.items():
                 env += ' -e "{0}={1}"'.format(key, value)
+                # Bank dependency production directory
+                if key.endswith('source'):
+                    depends.append(value)
         # docker run with data.dir env as shared volume
         # forwarded env variables
         data_dir = self.bank_env['datadir'] + '/' + self.bank_env['dirversion']
         if 'BIOMAJ_DIR' in os.environ and os.environ['BIOMAJ_DIR'] and not os.environ['BIOMAJ_DIR'].startswith('local'):
             data_dir = os.environ['BIOMAJ_DIR'] + '/' + self.bank_env['dirversion']
 
+        depends_vol = ''
+        for vol in depends_vol:
+            depends_vol += '-v %s:%s:ro' % (vol, vol)
+
         if not self.run_as_root:
             cmd = '''uid={uid}
         gid={gid}
         {sudo} docker {docker_url} pull {container_id}
-        {sudo} docker {docker_url}  run --rm -w {bank_dir}  -v {data_dir}:{data_dir} {env} {container_id} \
+        {sudo} docker {docker_url}  run --rm -w {bank_dir} {depends_vol}  -v {data_dir}:{data_dir} {env} {container_id} \
         bash -c "groupadd --gid {gid} {group_biomaj} && useradd --uid {uid} --gid {gid} {user_biomaj}; \
         {exe} {args}; \
         chown -R {uid}:{gid} {bank_dir}"'''.format(
@@ -234,7 +242,8 @@ class DockerProcess(Process):
                 args=' '.join(self.args),
                 bank_dir=release_dir,
                 sudo=use_sudo,
-                docker_url=docker_url
+                docker_url=docker_url,
+                depends_vol=depends_vol
             )
         else:
             cmd = '''
@@ -253,7 +262,8 @@ class DockerProcess(Process):
                 args=' '.join(self.args),
                 bank_dir=release_dir,
                 sudo=use_sudo,
-                docker_url=docker_url
+                docker_url=docker_url,
+                depends_vol=depends_vol
             )
 
         (handler, tmpfile) = tempfile.mkstemp('biomaj')
