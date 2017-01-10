@@ -1,5 +1,6 @@
 3.0.4:
   for docker, restrict directory to bank directory and dependencies
+  add host in prometheus stats
 3.0.3:
   fix prometheus + gunicorn multi process
   add consul supervision

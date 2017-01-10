@@ -26,7 +26,7 @@ app = Flask(__name__)
 
 process_metric = Counter("biomaj_process_total", "Bank total process execution.", ['bank'])
 process_error_metric = Counter("biomaj_process_errors", "Bank total process errors.", ['bank'])
-process_time_metric = Gauge("biomaj_process_time", "Bank process execution time in seconds.", ['bank'])
+process_time_metric = Gauge("biomaj_process_time", "Bank process execution time in seconds.", ['bank', 'host'])
 
 config_file = 'config.yml'
 if 'BIOMAJ_CONFIG' in os.environ:
@@ -74,13 +74,17 @@ def add_metrics():
     '''
     Expects a JSON request with an array of {'bank': 'bank_name', 'error': 'error_message', 'execution_time': seconds_to_execute}
     '''
+
     procs = request.get_json()
     for proc in procs:
+        host = 'na'
+        if 'host' in downloaded_file:
+            host = downloaded_file['host']
         if 'error' in proc and proc['error']:
             process_error_metric.labels(proc['bank']).inc()
         else:
             process_metric.labels(proc['bank']).inc()
-            process_time_metric.labels(proc['bank']).set(proc['execution_time'])
+            process_time_metric.labels(proc['bank'], host).set(proc['execution_time'])
     return jsonify({'msg': 'OK'})
 
 

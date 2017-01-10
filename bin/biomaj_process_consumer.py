@@ -19,6 +19,8 @@ with open(config_file, 'r') as ymlfile:
 
 
 def on_executed(bank, procs):
+    if 'prometheus' in config and not config['prometheus']:
+        return
     metrics = []
     if not procs:
         metric = {'bank': bank, 'error': 1}
@@ -30,6 +32,8 @@ def on_executed(bank, procs):
                 metric['error'] = 1
             else:
                 metric['execution_time'] = proc['execution_time']
+            if 'hostname' in config['web']:
+                metric['host'] = config['web']['hostname']
             metrics.append(metric)
         r = requests.post(config['web']['local_endpoint'] + '/api/process/metrics', json = metrics)
 
