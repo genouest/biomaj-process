@@ -78,8 +78,8 @@ def add_metrics():
     procs = request.get_json()
     for proc in procs:
         host = 'na'
-        if 'host' in downloaded_file:
-            host = downloaded_file['host']
+        if 'host' in proc:
+            host = proc['host']
         if 'error' in proc and proc['error']:
             process_error_metric.labels(proc['bank']).inc()
         else:
