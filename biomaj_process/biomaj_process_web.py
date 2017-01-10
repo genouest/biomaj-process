@@ -12,6 +12,7 @@ from flask import jsonify
 from flask import request
 from prometheus_client import Counter
 from prometheus_client import Gauge
+from prometheus_client import Histogram
 from prometheus_client.exposition import generate_latest
 from prometheus_client import multiprocess
 from prometheus_client import CollectorRegistry
@@ -26,7 +27,7 @@ app = Flask(__name__)
 
 process_metric = Counter("biomaj_process_total", "Bank total process execution.", ['bank'])
 process_error_metric = Counter("biomaj_process_errors", "Bank total process errors.", ['bank'])
-process_time_metric = Gauge("biomaj_process_time", "Bank process execution time in seconds.", ['bank', 'host'])
+process_time_metric = Histogram("biomaj_process_time", "Bank process execution time in seconds.", ['bank', 'host'])
 
 config_file = 'config.yml'
 if 'BIOMAJ_CONFIG' in os.environ:
@@ -84,7 +85,7 @@ def add_metrics():
             process_error_metric.labels(proc['bank']).inc()
         else:
             process_metric.labels(proc['bank']).inc()
-            process_time_metric.labels(proc['bank'], host).set(proc['execution_time'])
+            process_time_metric.labels(proc['bank'], host).observe(proc['execution_time'])
     return jsonify({'msg': 'OK'})
 
 
