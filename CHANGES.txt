@@ -1,3 +1,5 @@
+3.0.6:
+  disable web thread logging
 3.0.5:
   retry in case of contact failure with proxy
 3.0.4:
