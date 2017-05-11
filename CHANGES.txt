@@ -1,3 +1,5 @@
+3.0.7:
+  fix case if process desc or type is missing in bank properties
 3.0.6:
   disable web thread logging
 3.0.5:

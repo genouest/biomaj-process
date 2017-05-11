@@ -159,8 +159,8 @@ class RemoteProcess(Process):
             proc_env_var.value = self.bank_env[envvar]
         process.shell_expand = self.expand
         process.name = self.name
-        process.description = self.desc
-        process.proc_type = self.proc_type
+        process.description = str(self.desc)
+        process.proc_type = str(self.proc_type)
         if self.docker:
             process.is_docker = True
             docker_info = message_pb2.Process.Docker()
