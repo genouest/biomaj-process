@@ -2,7 +2,6 @@
 
 redis:
     host: '127.0.0.1'
-    #host: '131.254.17.40'
     port: 6379
     db: 0
     prefix: 'biomaj'
