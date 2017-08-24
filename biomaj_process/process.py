@@ -338,8 +338,8 @@ class DrmaaProcess(Process):
                     jt.jobEnvironment = self.bank_env
                     if self.native:
                         jt.nativeSpecification = " " + self.native + " "
-                    jt.outputPath = self.output_file
-                    jt.errorPath = self.error_file
+                    jt.outputPath = ':' + self.output_file
+                    jt.errorPath = ':' + self.error_file
                     jobid = s.runJob(jt)
                     retval = s.wait(jobid, drmaa.Session.TIMEOUT_WAIT_FOREVER)
                     if retval.hasExited > 0:

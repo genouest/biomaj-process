@@ -1,3 +1,5 @@
+3.0.8:
+  Fix #1, DRMAA needs colon in front of output and error path (mandatory depending on versions)
 3.0.7:
   fix case if process desc or type is missing in bank properties
 3.0.6:
