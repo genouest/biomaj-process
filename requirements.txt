@@ -8,5 +8,5 @@ flask
 python-consul
 prometheus_client>=0.0.18
 requests
-biomaj_core
+biomaj_core>=3.0.10
 biomaj_zipkin

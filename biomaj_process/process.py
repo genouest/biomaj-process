@@ -220,7 +220,7 @@ class DockerProcess(Process):
             data_dir = os.environ['BIOMAJ_DIR'] + '/' + self.bank_env['dirversion']
 
         depends_vol = ''
-        for vol in depends_vol:
+        for vol in depends:
             depends_vol += '-v %s:%s:ro' % (vol, vol)
 
         if not self.run_as_root:

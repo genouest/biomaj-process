@@ -35,7 +35,8 @@ def on_executed(bank, procs):
             if 'hostname' in config['web']:
                 metric['host'] = config['web']['hostname']
             metrics.append(metric)
-        r = requests.post(config['web']['local_endpoint'] + '/api/process/metrics', json = metrics)
+        proxy = Utils.get_service_endpoint(config, 'process')
+        r = requests.post(proxy + '/api/process/metrics', json = metrics)
 
 
 process = ProcessService(config_file)

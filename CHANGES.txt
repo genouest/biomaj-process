@@ -1,3 +1,6 @@
+3.0.9:
+  Allow local_endpoint definition per service
+  Fix volumes for docker with dependency banks
 3.0.8:
   Fix #1, DRMAA needs colon in front of output and error path (mandatory depending on versions)
 3.0.7:
