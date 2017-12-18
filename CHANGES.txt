@@ -1,3 +1,6 @@
+3.0.10
+  README doc fixes
+  Add dependency banks additional volumes for Docker
 3.0.9:
   Allow local_endpoint definition per service
   Fix volumes for docker with dependency banks

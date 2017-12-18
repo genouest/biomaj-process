@@ -248,7 +248,7 @@ class DockerProcess(Process):
         else:
             cmd = '''
         {sudo} docker {docker_url} pull {container_id}
-        {sudo} docker {docker_url} run --rm -w {bank_dir}  -v {data_dir}:{data_dir} {env} {container_id} \
+        {sudo} docker {docker_url} run --rm -w {bank_dir} {depends_vol} -v {data_dir}:{data_dir} {env} {container_id} \
         {exe} {args} \
         '''.format(
                 uid=os.getuid(),

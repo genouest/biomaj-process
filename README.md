@@ -38,4 +38,6 @@ If you cloned the repository and installed it via python setup.py install, just 
     export prometheus_multiproc_dir=..path_to/prometheus-multiproc
     gunicorn -c ..path_to/gunicorn_conf.py biomaj_download.biomaj_process_web:app
 
-Web processes should be behind a proxy/load balancer, API base url /api/download
+Web processes should be behind a proxy/load balancer, API base url /api/process
+
+A prometheus /metrics endpoint is exposed on web server
