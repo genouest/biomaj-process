@@ -104,4 +104,4 @@ class ProcessServiceClient(object):
                         return
                 except Exception:
                     logging.exception('Failed to send clean operation: %s' % (url))
-            raise Exception('Failed to connect to the process proxy')
+            logging.error('Process:RemoteProcess:Session:Clean:Error:' + self.bank + '/' + self.session)

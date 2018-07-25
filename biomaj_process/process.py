@@ -141,7 +141,11 @@ class RemoteProcess(Process):
 
     def run(self, simulate=False):
         psc = ProcessServiceClient(self.rabbit_mq, self.rabbit_mq_port, self.rabbit_mq_virtualhost, self.rabbit_mq_user, self.rabbit_mq_password)
-        session = psc.create_session(self.bank, self.proxy)
+        try:
+            session = psc.create_session(self.bank, self.proxy)
+        except Exception as e:
+            logging.exception('Process:RemoteProcess:Session:Create:Error:' + str(e))
+            return False
         from biomaj_process.message import message_pb2
         biomaj_process = message_pb2.Operation()
         biomaj_process.type = 1
