@@ -174,7 +174,12 @@ class RemoteProcess(Process):
             trace.span_id = self.parent_id
             biomaj_process.trace.MergeFrom(trace)
         psc.execute_process(biomaj_process)
-        (exitcode, info) = psc.wait_for_process()
+        exitcode = 0
+        try:
+            (exitcode, info) = psc.wait_for_process()
+        except Exception as e:
+            logging.exception('Error during process execution: ' + str(e))
+            exitcode = 1
         psc.clean()
         if exitcode > 0:
             return False
