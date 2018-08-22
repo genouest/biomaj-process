@@ -1,4 +1,4 @@
-package biomajprocess;
+package biomaj.process;
 
 message Process {
 
