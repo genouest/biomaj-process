@@ -12,7 +12,7 @@ import time
 
 from mock import patch
 
-from biomaj_process.message import message_pb2
+from biomaj_process.message import procmessage_pb2
 from biomaj_process.process_service import ProcessService
 
 import unittest
@@ -34,7 +34,7 @@ class TestBiomajProcess(unittest.TestCase):
     """
     Checks bank init
     """
-    msg = message_pb2.Process()
+    msg = procmessage_pb2.Process()
     msg.bank = 'test'
     msg.session = self.session
     msg.log_dir = self.test_dir

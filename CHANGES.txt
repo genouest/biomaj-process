@@ -1,5 +1,6 @@
 3.0.11:
   Catch exception for microservices if remote server is not reachable
+  Rename package for protobuf to avoid collisions
 3.0.10:
   README doc fixes
   Add dependency banks additional volumes for Docker
