@@ -17,7 +17,7 @@ from prometheus_client import CollectorRegistry
 import consul
 import redis
 
-from biomaj_process.message import message_pb2
+from biomaj_process.message import procmessage_pb2
 from biomaj_process.process_service import ProcessService
 from biomaj_core.utils import Utils
 
@@ -97,7 +97,7 @@ def create_session(bank):
 @app.route('/api/process/session/<bank>/<session>', methods=['DELETE'])
 def clean_session(bank, session):
     dserv = ProcessService(config_file, rabbitmq=False)
-    biomaj_file_info = message_pb2.Process()
+    biomaj_file_info = procmessage_pb2.Process()
     biomaj_file_info.bank = bank
     biomaj_file_info.session = session
     dserv.clean(biomaj_file_info)

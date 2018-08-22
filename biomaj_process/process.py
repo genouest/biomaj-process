@@ -146,10 +146,10 @@ class RemoteProcess(Process):
         except Exception as e:
             logging.exception('Process:RemoteProcess:Session:Create:Error:' + str(e))
             return False
-        from biomaj_process.message import message_pb2
-        biomaj_process = message_pb2.Operation()
+        from biomaj_process.message import procmessage_pb2
+        biomaj_process = procmessage_pb2.Operation()
         biomaj_process.type = 1
-        process = message_pb2.Process()
+        process = procmessage_pb2.Process()
         process.bank = self.bank
         process.session = session
         process.log_dir = self.log_dir
@@ -167,13 +167,13 @@ class RemoteProcess(Process):
         process.proc_type = str(self.proc_type)
         if self.docker:
             process.is_docker = True
-            docker_info = message_pb2.Process.Docker()
+            docker_info = procmessage_pb2.Process.Docker()
             docker_info.image = self.docker
             docker_info.use_sudo = self.docker_sudo
             process.docker.MergeFrom(docker_info)
         biomaj_process.process.MergeFrom(process)
         if self.trace_id:
-            trace = message_pb2.Operation.Trace()
+            trace = procmessage_pb2.Operation.Trace()
             trace.trace_id = self.trace_id
             trace.span_id = self.parent_id
             biomaj_process.trace.MergeFrom(trace)

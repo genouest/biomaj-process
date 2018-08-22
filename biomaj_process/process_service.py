@@ -11,7 +11,7 @@ from flask import Flask
 from flask import jsonify
 import consul
 
-from biomaj_process.message import message_pb2
+from biomaj_process.message import procmessage_pb2
 from biomaj_process.process import Process
 from biomaj_process.process import DockerProcess
 from biomaj_core.utils import Utils
@@ -225,7 +225,7 @@ class ProcessService(object):
         Manage download and send ACK message
         '''
         try:
-            operation = message_pb2.Operation()
+            operation = procmessage_pb2.Operation()
             operation.ParseFromString(body)
             # self.logger.debug('Received message: %s' % (operation))
             if operation.type == 1:
