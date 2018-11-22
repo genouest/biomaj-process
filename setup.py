@@ -44,7 +44,7 @@ config = {
     'install_requires': [
                          'biomaj_core',
                          'biomaj_zipkin',
-                         'pika',
+                         'pika==0.11.2',
                          'redis',
                          'PyYAML',
                          'flask',
