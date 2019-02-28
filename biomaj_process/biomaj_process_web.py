@@ -59,7 +59,7 @@ def consul_declare(config):
                 'traefik.backend=biomaj-process',
                 'traefik.frontend.rule=PathPrefix:/api/process',
                 'traefik.enable=true'
-                ]
+            ]
         )
         check = consul.Check.http(url='http://' + config['web']['hostname'] + ':' + str(config['web']['port']) + '/api/process', interval=20)
         consul_agent.agent.check.register(config['consul']['id'] + '_check', check=check, service_id=config['consul']['id'])
