@@ -1,6 +1,6 @@
 mock
 nose
-pika==0.11.2
+pika==0.13.0
 redis
 PyYAML
 protobuf
@@ -8,5 +8,5 @@ flask
 python-consul
 prometheus_client>=0.0.18
 requests
-biomaj_core>=3.0.10
+biomaj_core>=3.0.16
 biomaj_zipkin
