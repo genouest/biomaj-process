@@ -1,3 +1,6 @@
+3.0.12:
+  Update pika dependency release
+  Add tags for traefik support
 3.0.11:
   Catch exception for microservices if remote server is not reachable
   Rename package for protobuf to avoid collisions

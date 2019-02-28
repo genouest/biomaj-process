@@ -1,30 +1,29 @@
 language: python
 sudo: false
 python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
+- '2.7'
+- '3.4'
+- '3.5'
 services:
-  - redis
-# Apply only on main branches
+- redis
 branches:
   except:
-    - /^feature.*$/
-# command to install dependencies
-#before_install:
-#  - "sudo apt-get update -qq"
-#  - "sudo apt-get install -qq libldap2-dev libsasl2-dev"
+  - "/^feature.*$/"
 install:
-  - "pip install flake8"
-  - "pip install -r requirements.txt"
-  - "pip install coverage"
-  - "pip install python-coveralls"
-  - "python setup.py -q install"
-#  - "echo data_file=$TRAVIS_BUILD_DIR/.coverage >> .coveragerc"
-# command to run tests
+- pip install flake8
+- pip install -r requirements.txt
+- pip install coverage
+- pip install python-coveralls
+- python setup.py -q install
 script:
-   - python setup.py test
-   - flake8 --ignore E501 biomaj_process/*.py
-#after_success:
-#  - coveralls
-
+- python setup.py test
+- flake8 --ignore E501 biomaj_process/*.py
+deploy:
+  provider: pypi
+  skip_existing: true
+  user: osallou
+  password:
+    secure: WSyAkAWF5GB+7sBmGBNYxrtNuY5gFXEWqcRM/8ix2ukoepGQC5BDxmmaiAcsPNONnHsN6DO6e/YvWOhv2CcD53C70LYWILfOfRYr27rGRdTb0xUb4Ji4T6N+Q0jOZP/YFE5iawNEV+WH1XFBKSsHNH7Njvgy/6n/L40SOAZasOuSGK4W7C35FXnSxRxuEm5GKdXtmrwviCR+UyRK7n4jKu0uVKOtxVgiqniScZKc/lpcr7i6+7p2AZsXB6FGm+Kyn8kGzrBXvF2gv8WbcaA0Le6H/b9IDs/AE7Y2zcObZRPH+GVZqXYkxzHbbevMdCWy2vNxebdK/j53JV6hDQg9mU0GIPAoZUQ4u4gSQeyuneyDeAqUKPNR74d9G1BKlpzsmyq3XbNdEEZtF6Lbjr/1W/Lb0VWTNeTS8bfJxQBwWNpnQL02/EhmBn1KM/nSazXNZC3rzBcxHsesQbbmtOmMsprbdLIs0FBecKnSxk9KCLplTzAvJfGAWP5WqHNW0bWYA7DDM4wbJvWbiGJgYwdyXqpiPqocUOHCli9QDxpvJG21GHZV/lKRZPe5x+hLcYIJQhQIvJHBdbIZxqSq1bt9+JvXElcZN20oPPKieAl6LM6t5AXl+uUBSopWstMLNsJERekrPbnZxnrAFEDjzp2egqtXpz+qyWPLCrmSbkgNOVY=
+  distributions: sdist bdist_wheel
+  on:
+    tags: true
