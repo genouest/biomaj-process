@@ -224,9 +224,10 @@ class DockerProcess(Process):
                     depends.append(value)
         # docker run with data.dir env as shared volume
         # forwarded env variables
-        data_dir = self.bank_env['datadir'] + '/' + self.bank_env['dirversion']
-        if 'BIOMAJ_DIR' in os.environ and os.environ['BIOMAJ_DIR'] and not os.environ['BIOMAJ_DIR'].startswith('local'):
-            data_dir = os.environ['BIOMAJ_DIR'] + '/' + self.bank_env['dirversion']
+        container_data_dir = self.bank_env['datadir'] + '/' + self.bank_env['dirversion']
+        host_data_dir = container_data_dir
+        if 'BIOMAJ_HOST_DATA_DIR' in os.environ and os.environ['BIOMAJ_HOST_DATA_DIR'] and not os.environ['BIOMAJ_HOST_DATA_DIR'].startswith('local'):
+            host_data_dir = os.environ['BIOMAJ_HOST_DATA_DIR'] + '/' + self.bank_env['dirversion']
 
         depends_vol = ''
         for vol in depends:
@@ -236,13 +237,14 @@ class DockerProcess(Process):
             cmd = '''uid={uid}
         gid={gid}
         {sudo} docker {docker_url} pull {container_id}
-        {sudo} docker {docker_url}  run --rm -w {bank_dir} {depends_vol}  -v {data_dir}:{data_dir} {env} {container_id} \
+        {sudo} docker {docker_url}  run --rm -w {bank_dir} {depends_vol}  -v {host_data_dir}:{container_data_dir} {env} {container_id} \
         bash -c "groupadd --gid {gid} {group_biomaj} && useradd --uid {uid} --gid {gid} {user_biomaj}; \
         {exe} {args}; \
         chown -R {uid}:{gid} {bank_dir}"'''.format(
                 uid=os.getuid(),
                 gid=os.getgid(),
-                data_dir=data_dir,
+                host_data_dir=host_data_dir,
+                container_data_dir=container_data_dir,
                 env=env,
                 container_id=self.docker,
                 group_biomaj='biomaj',
@@ -257,12 +259,13 @@ class DockerProcess(Process):
         else:
             cmd = '''
         {sudo} docker {docker_url} pull {container_id}
-        {sudo} docker {docker_url} run --rm -w {bank_dir} {depends_vol} -v {data_dir}:{data_dir} {env} {container_id} \
+        {sudo} docker {docker_url} run --rm -w {bank_dir} {depends_vol} -v {host_data_dir}:{container_data_dir} {env} {container_id} \
         {exe} {args} \
         '''.format(
                 uid=os.getuid(),
                 gid=os.getgid(),
-                data_dir=data_dir,
+                host_data_dir=host_data_dir,
+                container_data_dir=container_data_dir,
                 env=env,
                 container_id=self.docker,
                 group_biomaj='biomaj',
