@@ -49,6 +49,7 @@ class ProcessServiceClient(object):
         raise Exception('Failed to connect to the process proxy')
 
     def execute_process(self, biomaj_process):
+        self.biomaj_process = biomaj_process
         if self.remote:
             self.channel.basic_publish(
                 exchange='',
@@ -58,8 +59,8 @@ class ProcessServiceClient(object):
                     # make message persistent
                     delivery_mode=2
                 ))
-        else:
-            self.biomaj_process = biomaj_process
+        #else:
+        #    self.biomaj_process = biomaj_process
 
     def wait_for_process(self):
         over = False
