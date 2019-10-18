@@ -1,4 +1,4 @@
-3.0.15 [unreleased]:
+3.0.15:
   Add proc name in logs for waiting and result
 3.0.14:
   Add env var BIOMAJ_HOST_DATA_DIR to use with *docker* process executor to specify data.dir location if different between host and container (if BIOMAJ_DATA_DIR not a subdirectory of BIOMAJ_DIR for example)
