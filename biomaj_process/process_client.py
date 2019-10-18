@@ -65,7 +65,7 @@ class ProcessServiceClient(object):
         over = False
         exitcode = -1
         info = None
-        logging.info("Process:RemoteProcess:Waiting")
+        logging.info("Process:RemoteProcess:Waiting:" + str(self.biomaj_process.process.name))
         errors = 0
         while not over:
             if errors >= 3:
@@ -89,7 +89,7 @@ class ProcessServiceClient(object):
                 over = True
                 if result['exitcode'] > 0:
                     info = result['info']
-                    self.logger.error('Process:RemoteProcess:Error:' + str(result['info']))
+                    self.logger.error('Process:RemoteProcess:Error:' + str(self.biomaj_process.process.name) + ': ' + str(result['info']))
             else:
                 time.sleep(10)
         return (exitcode, info)
