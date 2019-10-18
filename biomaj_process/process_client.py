@@ -59,8 +59,6 @@ class ProcessServiceClient(object):
                     # make message persistent
                     delivery_mode=2
                 ))
-        #else:
-        #    self.biomaj_process = biomaj_process
 
     def wait_for_process(self):
         over = False
