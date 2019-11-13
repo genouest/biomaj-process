@@ -46,6 +46,7 @@ class ProcessServiceClient(object):
                     return result['session']
             except Exception:
                 logging.exception('Failed to send create operation: %s' % (url))
+                time.sleep(5)
         raise Exception('Failed to connect to the process proxy')
 
     def execute_process(self, biomaj_process):
@@ -103,4 +104,5 @@ class ProcessServiceClient(object):
                         return
                 except Exception:
                     logging.exception('Failed to send clean operation: %s' % (url))
+                    time.sleep(5)
             logging.error('Process:RemoteProcess:Session:Clean:Error:' + self.bank + '/' + self.session)
