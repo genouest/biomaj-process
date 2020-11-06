@@ -1,3 +1,5 @@
+3.0.17 [UNRELEASED]:
+  Fix yaml load warnings
 3.0.16:
   In case of proxy comm failure, sleep a few seconds before retry
 3.0.15:
