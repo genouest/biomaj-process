@@ -262,14 +262,14 @@ class DockerProcess(Process):
         {sudo} docker {docker_url} run --rm -w {bank_dir} {depends_vol} -v {host_data_dir}:{container_data_dir} {env} {container_id} \
         {exe} {args} \
         '''.format(
-                uid=os.getuid(),
-                gid=os.getgid(),
+                # uid=os.getuid(),
+                # gid=os.getgid(),
                 host_data_dir=host_data_dir,
                 container_data_dir=container_data_dir,
                 env=env,
                 container_id=self.docker,
-                group_biomaj='biomaj',
-                user_biomaj='biomaj',
+                # group_biomaj='biomaj',
+                # user_biomaj='biomaj',
                 exe=self.exe,
                 args=' '.join(self.args),
                 bank_dir=release_dir,
