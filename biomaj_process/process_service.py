@@ -1,6 +1,10 @@
 import logging
 import logging.config
 import yaml
+try:
+    from yaml import CLoader as Loader
+except ImportError:
+    from yaml import Loader
 import redis
 import uuid
 import traceback
@@ -73,7 +77,7 @@ class ProcessService(object):
         self.bank = None
         self.executed_callback = None
         with open(config_file, 'r') as ymlfile:
-            self.config = yaml.load(ymlfile, Loader=yaml.FullLoader)
+            self.config = yaml.load(ymlfile, Loader=Loader)
             Utils.service_config_override(self.config)
 
         Zipkin.set_config(self.config)

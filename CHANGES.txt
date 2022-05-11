@@ -1,4 +1,6 @@
-3.0.17 [UNRELEASED]:
+3.0.18:
+  Normalize yaml setup with other biomaj components
+3.0.17:
   Fix yaml load warnings
 3.0.16:
   In case of proxy comm failure, sleep a few seconds before retry

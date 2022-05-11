@@ -3,6 +3,10 @@ import logging
 
 import requests
 import yaml
+try:
+    from yaml import CLoader as Loader
+except ImportError:
+    from yaml import Loader
 import consul
 
 from biomaj_process.process_service import ProcessService
@@ -14,7 +18,7 @@ if 'BIOMAJ_CONFIG' in os.environ:
 
 config = None
 with open(config_file, 'r') as ymlfile:
-    config = yaml.load(ymlfile, Loader=yaml.FullLoader)
+    config = yaml.load(ymlfile, Loader=Loader)
     Utils.service_config_override(config)
 
 
