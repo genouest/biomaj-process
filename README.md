@@ -17,9 +17,12 @@ To compile protobuf, in biomaj_process/message:
 
     flake8  biomaj_process
 
+    CONFIG=tests/config.yml python -m pytest -v tests/biomaj_tests.py
+
 # Run
 
 ## Message consumer:
+
 export BIOMAJ_CONFIG=path_to_config.yml
 python bin/biomaj_process_consumer.py
 

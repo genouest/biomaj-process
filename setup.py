@@ -21,7 +21,7 @@ config = {
     'url': 'http://biomaj.genouest.org',
     'download_url': 'http://biomaj.genouest.org',
     'author_email': 'olivier.sallou@irisa.fr',
-    'version': '3.0.18',
+    'version': '3.0.19',
      'classifiers': [
         # How mature is this project? Common values are
         #   3 - Alpha
@@ -53,8 +53,7 @@ config = {
                          'protobuf',
                          'requests'
                         ],
-    'tests_require': ['nose', 'mock'],
-    'test_suite': 'nose.collector',
+    'tests_require': ['pytest', 'mock'],
     'packages': find_packages(),
     'include_package_data': True,
     'scripts': ['bin/biomaj_process_consumer.py'],

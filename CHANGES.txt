@@ -1,3 +1,5 @@
+3.0.19
+  Replace nose by pytest
 3.0.18:
   Normalize yaml setup with other biomaj components
 3.0.17:

@@ -1,6 +1,3 @@
-from nose.tools import *
-from nose.plugins.attrib import attr
-
 import json
 import shutil
 import os
@@ -15,18 +12,18 @@ from mock import patch
 from biomaj_process.message import procmessage_pb2
 from biomaj_process.process_service import ProcessService
 
-import unittest
+import pytest
 
 
-class TestBiomajProcess(unittest.TestCase):
+class TestBiomajProcess():
 
-  def setUp(self):
+  def setup_method(self, m):
     self.curdir = os.path.dirname(os.path.realpath(__file__))
     self.pserv = ProcessService(os.path.join(self.curdir, 'config.yml'),rabbitmq=False)
     self.session = self.pserv._create_session('test')
     self.test_dir = tempfile.mkdtemp('biomaj')
 
-  def tearDown(self):
+  def teardown_method(self, m):
     self.pserv.clean()
     shutil.rmtree(self.test_dir)
 
@@ -47,4 +44,4 @@ class TestBiomajProcess(unittest.TestCase):
     msg.shell_expand = False
     print(msg)
     proc = self.pserv.execute(msg)
-    self.assertTrue(proc['exitcode'] == 0)
+    assert (proc['exitcode'] == 0)

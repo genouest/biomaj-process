@@ -61,6 +61,23 @@ def consul_declare(config):
         return False
 
 
+class MemoryStore(object):
+
+    def __init__(self) -> None:
+        self.data = {}
+
+    def delete(self, key):
+        if key in self.data:
+            del self.data[key]
+
+    def set(self, key, value):
+        self.data[key] = value
+
+    def get(self, key):
+        if key not in self.data:
+            return None
+        return self.data[key]
+
 class ProcessService(object):
 
     channel = None
@@ -90,11 +107,13 @@ class ProcessService(object):
 
         if not self.redis_client:
             self.logger.debug('Init redis connection')
-            self.redis_client = redis.StrictRedis(host=self.config['redis']['host'],
+            if self.config['redis']['host']:
+                self.redis_client = redis.StrictRedis(host=self.config['redis']['host'],
                                                   port=self.config['redis']['port'],
                                                   db=self.config['redis']['db'],
                                                   decode_responses=True)
-
+            else:
+                self.redis_client = MemoryStore()
         if rabbitmq and not self.channel:
             connection = None
             rabbitmq_port = self.config['rabbitmq']['port']
