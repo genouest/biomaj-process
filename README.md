@@ -11,7 +11,7 @@ Messages go through RabbitMQ (to be installed).
 
 To compile protobuf, in biomaj_process/message:
 
-    protoc --python_out=. message.proto
+    protoc --python_out=. procmessage.proto
 
 # Development
 
