@@ -46,7 +46,7 @@ config = {
         'Programming Language :: Python :: 3.4'
     ],
     'install_requires': requirements,
-    'tests_require': ['pytest', 'mock'],
+    'tests_require': ['pytest'],
     'packages': find_packages(),
     'include_package_data': True,
     'scripts': ['bin/biomaj_process_consumer.py'],

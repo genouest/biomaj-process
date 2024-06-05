@@ -6,8 +6,7 @@ import logging
 import copy
 import stat
 import time
-
-from mock import patch
+from unittest.mock import patch
 
 from biomaj_process.message import procmessage_pb2
 from biomaj_process.process_service import ProcessService
